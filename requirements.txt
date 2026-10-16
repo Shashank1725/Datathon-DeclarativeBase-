@@ -1,7 +1,8 @@
 fastapi
-uvicorn
+uvicorn[standard]
 pandas
 numpy
 scikit-learn
 lightgbm
 joblib
+gunicorn
