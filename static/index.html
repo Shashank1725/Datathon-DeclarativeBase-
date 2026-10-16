@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Revenue Sentinel — Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0b0e13;--panel:#121720;--panel2:#171e29;--line:#263141;--text:#edf2f8;--muted:#91a0b3;--red:#ff765e;--amber:#f6c15b;--green:#5ed6a3;--blue:#7caeff}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.55 Manrope,system-ui,sans-serif}
+button,input,select{font:inherit}button{cursor:pointer}header{display:flex;align-items:center;justify-content:space-between;padding:24px 30px 18px;gap:18px;flex-wrap:wrap;border-bottom:1px solid var(--line)}
+.brand{display:flex;gap:12px;align-items:center}.mark{width:40px;height:40px;border-radius:12px;background:linear-gradient(145deg,#ff9a72,#ff5d50);display:grid;place-items:center;color:#190d0a;font-size:21px;font-weight:900}.eyebrow{font:11px "DM Mono",monospace;letter-spacing:.13em;color:var(--red);text-transform:uppercase}.brand h1{font-size:24px;letter-spacing:-.04em;margin:0}.brand p{margin:2px 0 0;color:var(--muted);font-size:12px}.live{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:12px}.dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 12px #5ed6a377}
+nav{display:flex;gap:5px;padding:12px 30px;border-bottom:1px solid var(--line);overflow-x:auto}nav button{background:transparent;border:1px solid transparent;border-radius:8px;color:var(--muted);padding:10px 13px;white-space:nowrap;font-size:12px;font-weight:700}nav button.active{background:var(--panel2);border-color:var(--line);color:var(--text)}nav button:hover{color:var(--text)}
+main{max-width:1440px;margin:auto;padding:24px 30px 50px}.view{display:none}.view.active{display:block}.section-head{display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap;margin-bottom:18px}.section-head h2{font-size:20px;letter-spacing:-.03em;margin:0}.section-head p{color:var(--muted);margin:4px 0 0;font-size:12px}.pill{border:1px solid var(--line);border-radius:99px;padding:6px 10px;color:var(--muted);font:11px "DM Mono",monospace}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:18px}.kpi,.panel,.card{background:var(--panel);border:1px solid var(--line);border-radius:14px}.kpi{padding:17px 18px;position:relative;overflow:hidden}.kpi:before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--red)}.kpi:nth-child(2):before{background:var(--amber)}.kpi:nth-child(3):before{background:var(--blue)}.kpi:nth-child(4):before{background:var(--green)}.kpi .label{font-size:11px;color:var(--muted);font-weight:700}.kpi strong{display:block;font-size:27px;letter-spacing:-.05em;margin:7px 0 2px}.kpi small{color:var(--muted);font-size:11px}.delta{color:var(--green);font-size:11px;margin-left:6px}
+.dashboard{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(270px,.85fr);gap:14px}.panel{padding:18px}.panel-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:15px}.panel-title h3{margin:0;font-size:14px}.panel-title span{font-size:11px;color:var(--muted)}
+.chart{height:255px;display:flex;align-items:end;gap:clamp(8px,2vw,24px);padding:18px 6px 0;border-bottom:1px solid var(--line);background:repeating-linear-gradient(to top,transparent 0,transparent 50px,#26314188 51px,#26314188 52px)}.bar-group{flex:1;min-width:0;height:100%;display:flex;flex-direction:column;justify-content:end;align-items:center;gap:7px}.bars{height:calc(100% - 28px);width:min(100%,55px);display:flex;align-items:end;gap:3px}.bar{width:33.33%;min-height:3px;border-radius:4px 4px 0 0;transition:height .35s ease;position:relative}.bar:hover{filter:brightness(1.3)}.bar-label{font-size:10px;color:var(--muted);text-align:center;white-space:nowrap}.chart-legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:15px;color:var(--muted);font-size:11px}.key{display:inline-block;width:7px;height:7px;border-radius:2px;margin-right:5px}
+.risk-list{display:grid;gap:12px}.risk{padding:12px;background:var(--bg);border:1px solid var(--line);border-radius:10px}.risk-top{display:flex;justify-content:space-between;gap:10px;font-size:12px;font-weight:700}.risk p{margin:5px 0 9px;color:var(--muted);font-size:11px}.track{height:5px;background:#252d3a;border-radius:99px;overflow:hidden}.track span{display:block;height:100%;border-radius:99px;background:var(--red)}.risk:nth-child(2) .track span{background:var(--amber)}.risk:nth-child(3) .track span{background:var(--blue)}
+.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:12px}table{border-collapse:collapse;width:100%;min-width:720px;font-size:12px}th,td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--line);white-space:nowrap}th{font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);background:var(--panel2);font-weight:700}tr:last-child td{border-bottom:0}tbody tr:hover{background:#ffffff04}.num{text-align:right;font-family:"DM Mono",monospace}.negative{color:var(--red)}.positive{color:var(--green)}.status{display:inline-flex;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:800}.status.block{background:#40221f;color:#ff9a88}.status.warn{background:#3b301a;color:#ffd57c}.status.ok{background:#18372e;color:#7de7bb}.status.info{background:#1c2c43;color:#a6c9ff}
+.split{display:grid;grid-template-columns:minmax(260px,.72fr) minmax(0,1.28fr);gap:14px}.card{padding:20px}.card h3{margin:0 0 4px;font-size:16px}.sub{font-size:12px;color:var(--muted);margin:0 0 18px}.field{margin:14px 0}.field label{display:block;color:var(--muted);font-size:11px;font-weight:700;margin-bottom:6px}.field input,.field select{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:8px;color:var(--text);padding:11px 12px;outline:none}.field input:focus,.field select:focus{border-color:var(--blue)}.btn{border:0;border-radius:8px;background:var(--red);color:#1b0d0a;font-weight:800;padding:11px 15px;font-size:12px}.btn:hover{filter:brightness(1.08)}.btn.secondary{background:transparent;color:var(--text);border:1px solid var(--line)}.btn.small{padding:7px 10px}.form-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}.verdict{font-size:25px;font-weight:800;letter-spacing:-.04em}.verdict.ALLOW{color:var(--green)}.verdict.ADJUST{color:var(--amber)}.verdict.BLOCK{color:var(--red)}.compare{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0}.compare>div{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:14px}.compare small{display:block;color:var(--muted);font-size:10px}.compare strong{display:block;font-size:23px;margin:5px 0}.actions{padding-left:18px;color:var(--text);font-size:12px}.actions li{margin:7px 0}.muted{color:var(--muted)}.empty{padding:45px 20px;text-align:center;color:var(--muted)}.footnote{font-size:11px;color:var(--muted);margin-top:12px;line-height:1.6}.editable{width:100px;background:var(--bg);border:1px solid var(--line);color:var(--text);border-radius:5px;padding:6px}.notice{padding:12px 14px;border:1px solid #58472b;background:#282215;color:#f5d99a;border-radius:9px;font-size:11px;margin-top:14px}.metric-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}.mini{padding:14px;background:var(--bg);border-radius:9px;border:1px solid var(--line)}.mini span{display:block;color:var(--muted);font-size:10px}.mini strong{font-size:18px}
+@media(max-width:900px){main{padding:18px}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.dashboard,.split{grid-template-columns:1fr}header{padding:18px}.dashboard{gap:12px}nav{padding:10px 18px}}@media(max-width:520px){.kpis{grid-template-columns:1fr 1fr;gap:8px}.kpi{padding:13px}.kpi strong{font-size:21px}.brand h1{font-size:20px}main{padding:14px}.metric-strip{grid-template-columns:1fr}.chart{gap:7px}.bar-label{font-size:9px}}
+</style>
+</head>
+<body>
+<header><div class="brand"><div class="mark">↗</div><div><div class="eyebrow">Revenue intelligence</div><h1>Revenue Sentinel</h1><p>Detect margin leaks. Guard checkout. Recover revenue.</p></div></div><div class="live"><span class="dot"></span> DEMO ENVIRONMENT <span class="pill">SAMPLE DATA</span></div></header>
+<nav role="tablist">
+<button class="active" data-view="overview">◈ &nbsp;Leak overview</button><button data-view="guard">⛨ &nbsp;Margin guard</button><button data-view="catalog">⌁ &nbsp;Catalog corrector</button><button data-view="sla">↗ &nbsp;Supplier claims</button><button data-view="orders">⚑ &nbsp;Flagged orders</button>
+</nav>
+<main>
+<section id="overview" class="view active">
+<div class="section-head"><div><h2>Revenue leak overview</h2><p>Illustrative order data · click a bar to inspect the leak category</p></div><span class="pill">LAST 30 DAYS · DEMO</span></div>
+<div class="kpis" id="kpis"></div>
+<div class="dashboard"><div class="panel"><div class="panel-title"><h3>Leak value by product category</h3><span>Estimated loss · USD</span></div><div class="chart" id="chart"></div><div class="chart-legend"><span><i class="key" style="background:#ff765e"></i>Underpricing</span><span><i class="key" style="background:#f6c15b"></i>Negative profit</span><span><i class="key" style="background:#7caeff"></i>Returns / cancellations</span></div></div>
+<div class="panel"><div class="panel-title"><h3>Priority actions</h3><span>TOP 3</span></div><div class="risk-list" id="risks"></div><p class="footnote">Values shown are synthetic prototype data, not live business metrics. Connect your order, catalog, and supplier feeds for real calculations.</p></div></div>
+</section>
+<section id="guard" class="view"><div class="section-head"><div><h2>Checkout margin guard</h2><p>Simulate a checkout and see whether the order should be approved, adjusted, or blocked.</p></div><span class="pill">RULE ENGINE · DEMO</span></div>
+<div class="split"><div class="card"><h3>Test a checkout</h3><p class="sub">Change the product, price, quantity, or discount.</p><div class="field"><label for="g_product">PRODUCT</label><select id="g_product"></select></div><div class="field"><label for="g_qty">QUANTITY</label><input id="g_qty" type="number" min="1" value="3"></div><div class="field"><label for="g_price">PRICE CHARGED PER UNIT ($)</label><input id="g_price" type="number" min="0" step=".01"></div><div class="field"><label for="g_discount">DISCOUNT (%)</label><input id="g_discount" type="number" min="0" max="100" value="20"></div><div class="form-actions"><button class="btn" id="runGuard">Run checkout check →</button><button class="btn secondary" id="resetGuard">Reset</button></div><p class="footnote">Demo policy: price cannot be below list price; net margin must be at least 10%; items listed below cost are held for review.</p></div><div class="card" id="guardResult"><div class="empty"><div style="font-size:28px;margin-bottom:8px">⛨</div>Run a checkout check to see the decision and recommended actions.</div></div></div>
+</section>
+<section id="catalog" class="view"><div class="section-head"><div><h2>Catalog price corrector</h2><p>Review products listed below cost and test corrected prices.</p></div><button class="btn" id="downloadCsv">Download corrected prices CSV ↓</button></div><div class="metric-strip" id="catalogMetrics"></div><div class="table-wrap"><table id="catalogTable"></table></div><p class="footnote">Suggested price targets a 25% margin over unit cost. A price below unit cost is flagged and should not be published without review.</p></section>
+<section id="sla" class="view"><div class="section-head"><div><h2>Supplier SLA claims</h2><p>Cancelled or returned orders with a recorded supplier delay beyond the promised lead time.</p></div><button class="btn" id="makeClaim">Generate claim letter</button></div><div class="metric-strip" id="slaMetrics"></div><div class="table-wrap"><table id="slaTable"></table></div><div id="claimBox" style="display:none;margin-top:14px" class="card"><div class="panel-title"><h3>Draft supplier claim</h3><button class="btn secondary small" id="copyClaim">Copy letter</button></div><pre id="claimText" style="white-space:pre-wrap;color:var(--muted);font:12px/1.7 'DM Mono',monospace"></pre></div><p class="footnote">Prototype limitation: supplier delay is only available for a subset of demo orders. This list should not be treated as a complete claim amount.</p></section>
+<section id="orders" class="view"><div class="section-head"><div><h2>Flagged orders</h2><p>Orders that combine unusual transaction patterns with negative profit.</p></div><span class="pill">HUMAN REVIEW REQUIRED</span></div><div class="metric-strip" id="orderMetrics"></div><div class="table-wrap"><table id="ordersTable"></table></div><p class="footnote">Flags are decision support, not proof of fraud. Review order context before taking action.</p></section>
+</main>
+<script>
+const products=[
+ {id:"PR-104",name:"Wireless Headphones",cat:"Electronics",cost:42,list:39,stock:48},
+ {id:"PR-208",name:"Everyday Backpack",cat:"Accessories",cost:24,list:32,stock:110},
+ {id:"PR-315",name:"Smart Desk Lamp",cat:"Home",cost:31,list:29,stock:56},
+ {id:"PR-411",name:"Fitness Watch",cat:"Electronics",cost:76,list:89,stock:34},
+ {id:"PR-522",name:"Travel Mug",cat:"Home",cost:8.5,list:12,stock:220},
+ {id:"PR-633",name:"Running Shoes",cat:"Apparel",cost:54,list:49,stock:62},
+ {id:"PR-704",name:"Phone Stand",cat:"Accessories",cost:6,list:10,stock:300},
+ {id:"PR-819",name:"Mechanical Keyboard",cat:"Electronics",cost:61,list:79,stock:28}
+];
+const cats=[
+ {name:"Electronics",under:18400,negative:12600,friction:9100},
+ {name:"Apparel",under:9700,negative:6800,friction:12100},
+ {name:"Home",under:8200,negative:5300,friction:6400},
+ {name:"Accessories",under:6100,negative:4100,friction:3900},
+ {name:"Beauty",under:4900,negative:2800,friction:3200}
+];
+const sla=[
+ {id:"TX-84219",product:"PR-104",status:"Returned",promised:3,actual:8,value:129.00},
+ {id:"TX-84172",product:"PR-522",status:"Cancelled",promised:2,actual:6,value:36.00},
+ {id:"TX-84051",product:"PR-633",status:"Returned",promised:4,actual:10,value:98.00},
+ {id:"TX-83988",product:"PR-315",status:"Cancelled",promised:3,actual:7,value:58.00},
+ {id:"TX-83804",product:"PR-208",status:"Returned",promised:5,actual:9,value:64.00}
+];
+const orders=[
+ {id:"TX-84291",cat:"Electronics",cause:"Below-cost sale",paid:31,list:79,discount:61,profit:-44.2,score:.97},
+ {id:"TX-84219",cat:"Electronics",cause:"Excess discount",paid:42,list:89,discount:53,profit:-18.5,score:.94},
+ {id:"TX-84172",cat:"Home",cause:"Price override",paid:8.5,list:12,discount:29,profit:-11.8,score:.91},
+ {id:"TX-84051",cat:"Apparel",cause:"Below-cost sale",paid:39,list:49,discount:20,profit:-15.0,score:.89},
+ {id:"TX-83988",cat:"Accessories",cause:"Excess discount",paid:4.5,list:10,discount:55,profit:-9.7,score:.86},
+ {id:"TX-83804",cat:"Electronics",cause:"Price override",paid:55,list:79,discount:30,profit:-6.2,score:.82}
+];
+const money=n=>new Intl.NumberFormat("en-US",{style:"currency",currency:"USD",maximumFractionDigits:0}).format(n);
+const m2=n=>new Intl.NumberFormat("en-US",{style:"currency",currency:"USD"}).format(n);
+const el=id=>document.getElementById(id);
+function table(headers,rows){return "<thead><tr>"+headers.map(h=>`<th>${h}</th>`).join("")+"</tr></thead><tbody>"+rows.join("")+"</tbody>"}
+function initOverview(){
+ const totals=cats.reduce((a,c)=>({u:a.u+c.under,n:a.n+c.negative,f:a.f+c.friction}),{u:0,n:0,f:0});
+ const below=products.filter(p=>p.list<p.cost).length;
+ const data=[["Checkout underpricing",money(totals.u),"Across 1,284 orders","red"],["Negative-profit orders",money(totals.n),"Across 316 orders","amber"],["Returns & cancellations",money(totals.f),"Across 492 orders","blue"],["Below-cost products",`${below} / ${products.length}`,"Catalog needs correction","green"]];
+ el("kpis").innerHTML=data.map((x,i)=>`<div class="kpi"><div class="label">${x[0]}</div><strong>${x[1]}</strong><small>${x[2]} ${i===0?'<span class="delta">↓ 8.4% vs prior period</span>':''}</small></div>`).join("");
+ const max=Math.max(...cats.flatMap(c=>[c.under,c.negative,c.friction]));
+ const colors=["#ff765e","#f6c15b","#7caeff"];
+ el("chart").innerHTML=cats.map(c=>`<div class="bar-group"><div class="bars">${[c.under,c.negative,c.friction].map((v,i)=>`<div class="bar" tabindex="0" title="${c.name} · ${["Underpricing","Negative profit","Returns / cancellations"][i]}: ${money(v)}" style="height:${Math.max(4,v/max*100)}%;background:${colors[i]}" onclick="showBar('${c.name}','${["Underpricing","Negative profit","Returns / cancellations"][i]}',${v})"></div>`).join("")}</div><div class="bar-label">${c.name}</div></div>`).join("");
+ el("risks").innerHTML=[["Fix below-cost listings",`${products.filter(p=>p.list<p.cost).length} products currently lose money at list price`,92],["Review deep discounts",`${orders.filter(o=>o.discount>=50).length} flagged orders have discounts above 50%`,74],["Claim supplier delays",`${sla.length} candidate claims found in demo data`,58]].map(r=>`<div class="risk"><div class="risk-top"><span>${r[0]}</span><span>${r[2]}%</span></div><p>${r[1]}</p><div class="track"><span style="width:${r[2]}%"></span></div></div>`).join("");
+}
+function showBar(cat,type,value){document.querySelector(".panel-title h3").textContent=`${cat} · ${type}`;document.querySelector(".panel-title span").textContent=`Estimated loss ${money(value)}`;}
+function initGuard(){
+ el("g_product").innerHTML=products.map(p=>`<option value="${p.id}">${p.id} · ${p.name} · list ${m2(p.list)} / cost ${m2(p.cost)}</option>`).join("");
+ const setPrice=()=>{const p=products.find(p=>p.id===el("g_product").value);el("g_price").value=p.list.toFixed(2)};
+ el("g_product").onchange=setPrice;setPrice();
+ el("runGuard").onclick=runGuard;el("resetGuard").onclick=()=>{el("g_qty").value=3;el("g_discount").value=20;setPrice();el("guardResult").innerHTML='<div class="empty">Run a checkout check to see the decision and recommended actions.</div>'};
+}
+function runGuard(){
+ const p=products.find(p=>p.id===el("g_product").value),q=Math.max(1,+el("g_qty").value||1),price=Math.max(0,+el("g_price").value||0),disc=Math.min(100,Math.max(0,+el("g_discount").value||0))/100;
+ const originalUnit=price*(1-disc),originalProfit=(originalUnit-p.cost)*q;
+ const actions=[];let decision="ALLOW",enforcedPrice=price,enforcedDisc=disc;
+ if(p.list<p.cost){decision="BLOCK";actions.push("Hold listing: current list price is below unit cost.");enforcedPrice=Math.max(p.cost*1.25,p.list);}
+ if(price<p.list){decision=decision==="BLOCK"?"BLOCK":"ADJUST";actions.push("Raise unit price to at least the current list price.");enforcedPrice=Math.max(enforcedPrice,p.list);}
+ if(enforcedPrice*(1-enforcedDisc)<p.cost*1.1){decision=decision==="BLOCK"?"BLOCK":"ADJUST";actions.push("Reduce discount to preserve at least 10% margin.");enforcedDisc=Math.min(enforcedDisc,Math.max(0,1-(p.cost*1.1/enforcedPrice)));}
+ if(!actions.length)actions.push("Price and discount meet the demo checkout rules.");
+ const enforcedProfit=(enforcedPrice*(1-enforcedDisc)-p.cost)*q,recovered=enforcedProfit-originalProfit;
+ el("guardResult").innerHTML=`<div class="eyebrow">Checkout decision</div><div class="verdict ${decision}">${{ALLOW:"Order approved",ADJUST:"Order adjusted",BLOCK:"Order blocked"}[decision]}</div><p class="sub">${p.name} · ${q} unit(s) · rule-based evaluation</p><div class="compare"><div><small>AS SUBMITTED · NET PROFIT</small><strong class="${originalProfit<0?'negative':'positive'}">${m2(originalProfit)}</strong><small>${m2(price)} unit price · ${(disc*100).toFixed(0)}% discount</small></div><div><small>AFTER GUARD · NET PROFIT</small><strong class="${enforcedProfit<0?'negative':'positive'}">${m2(enforcedProfit)}</strong><small>${m2(enforcedPrice)} unit price · ${(enforcedDisc*100).toFixed(0)}% discount</small></div></div><div class="mini"><span>Estimated profit protected on this order</span><strong class="${recovered>=0?'positive':'negative'}">${m2(recovered)}</strong></div><h3 style="margin-top:18px">Recommended actions</h3><ul class="actions">${actions.map(a=>`<li>${a}</li>`).join("")}</ul><p class="footnote">This prototype applies simple deterministic rules. It does not place or block a real order.</p>`;
+}
+let catalogRows=[];
+function initCatalog(){
+ catalogRows=products.map(p=>({...p,suggested:Math.ceil((p.cost/0.75)*100)/100}));
+ renderCatalog();
+}
+function renderCatalog(){
+ const below=catalogRows.filter(p=>p.list<p.cost).length;
+ el("catalogMetrics").innerHTML=`<div class="mini"><span>Products in catalog</span><strong>${catalogRows.length}</strong></div><div class="mini"><span>Listed below cost</span><strong class="${below?'negative':'positive'}">${below}</strong></div><div class="mini"><span>Target margin</span><strong>25%</strong></div>`;
+ el("catalogTable").innerHTML=table(["Product","Category","List price","Unit cost","Current margin","Suggested price","Test price","Status"],catalogRows.map((p,i)=>`<tr><td><b>${p.id}</b><br><span class="muted">${p.name}</span></td><td>${p.cat}</td><td class="num">${m2(p.list)}</td><td class="num">${m2(p.cost)}</td><td class="num ${p.list<p.cost?'negative':'positive'}">${((p.list-p.cost)/p.list*100).toFixed(1)}%</td><td class="num positive">${m2(p.suggested)}</td><td><input class="editable" type="number" min="0" step=".01" value="${p.suggested.toFixed(2)}" data-row="${i}"></td><td id="catstatus${i}">${p.list<p.cost?'<span class="status block">Below cost</span>':'<span class="status ok">Clears cost</span>'}</td></tr>`));
+ document.querySelectorAll("#catalogTable input").forEach(inp=>inp.oninput=()=>{const i=+inp.dataset.row,v=+inp.value;catalogRows[i].suggested=v;el("catstatus"+i).innerHTML=v<catalogRows[i].cost?'<span class="status block">Blocked: below cost</span>':'<span class="status ok">Clears cost</span>'});
+}
+function initSla(){
+ const total=sla.reduce((s,r)=>s+r.value,0),late=sla.reduce((s,r)=>s+(r.actual-r.promised),0);
+ el("slaMetrics").innerHTML=`<div class="mini"><span>Candidate claims</span><strong>${sla.length}</strong></div><div class="mini"><span>Associated order value</span><strong>${m2(total)}</strong></div><div class="mini"><span>Combined days late</span><strong>${late} days</strong></div>`;
+ el("slaTable").innerHTML=table(["Order ID","Product","Status","Promised (days)","Actual (days)","Days late","Order value"],sla.map(r=>`<tr><td><b>${r.id}</b></td><td>${r.product}</td><td><span class="status ${r.status==="Returned"?"warn":"block"}">${r.status}</span></td><td class="num">${r.promised}</td><td class="num">${r.actual}</td><td class="num negative">+${r.actual-r.promised}</td><td class="num">${m2(r.value)}</td></tr>`));
+ el("makeClaim").onclick=()=>{const lines=sla.map(r=>`- ${r.id} (${r.product}): ${r.status.toLowerCase()}, promised ${r.promised} days, actual ${r.actual} days, ${r.actual-r.promised} days late; order value ${m2(r.value)}.`).join("\\n");el("claimText").textContent=`Subject: Request for service-level review — delayed supplier deliveries\\n\\nDear Supplier Account Manager,\\n\\nWe are requesting a review of the orders listed below, where recorded delivery time exceeded the promised lead time and the order was subsequently cancelled or returned. Please validate the order-level records and advise on the applicable service-level credit or remedy.\\n\\n${lines}\\n\\nAssociated order value: ${m2(total)}. This is the value of the affected orders, not a confirmed damages calculation.\\n\\nPlease acknowledge receipt and respond within 14 days.\\n\\nRegards,\\nFinance & Procurement`;el("claimBox").style.display="block";};
+ el("copyClaim").onclick=async()=>{try{await navigator.clipboard.writeText(el("claimText").textContent);el("copyClaim").textContent="Copied ✓"}catch(e){alert("Copy unavailable in this browser. Select and copy the draft manually.")}};
+}
+function initOrders(){
+ el("orderMetrics").innerHTML=`<div class="mini"><span>Flagged orders</span><strong>${orders.length}</strong></div><div class="mini"><span>Total net loss</span><strong class="negative">${m2(orders.reduce((s,o)=>s+o.profit,0))}</strong></div><div class="mini"><span>Highest anomaly score</span><strong>${Math.max(...orders.map(o=>o.score)).toFixed(2)}</strong></div>`;
+ el("ordersTable").innerHTML=table(["Order ID","Category","Potential root cause","Paid","List price","Discount","Net profit","Anomaly score","Review"],orders.map(o=>`<tr><td><b>${o.id}</b></td><td>${o.cat}</td><td><span class="status warn">${o.cause}</span></td><td class="num">${m2(o.paid)}</td><td class="num">${m2(o.list)}</td><td class="num">${o.discount}%</td><td class="num negative">${m2(o.profit)}</td><td class="num">${o.score.toFixed(2)}</td><td><span class="status info">Needs review</span></td></tr>`));
+}
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{document.querySelectorAll("nav button").forEach(x=>x.classList.toggle("active",x===b));document.querySelectorAll(".view").forEach(v=>v.classList.toggle("active",v.id===b.dataset.view))});
+el("downloadCsv").onclick=()=>{const rows=[["product_id","product_name","category","old_list_price","unit_cost","suggested_price"],...catalogRows.map(p=>[p.id,p.name,p.cat,p.list,p.cost,p.suggested])];const csv=rows.map(r=>r.map(v=>`"${String(v).replaceAll('"','""')}"`).join(",")).join("\\n");const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));a.download="revenue-sentinel-corrected-prices.csv";a.click();URL.revokeObjectURL(a.href)};
+initOverview();initGuard();initCatalog();initSla();initOrders();
+</script>
+</body></html>
